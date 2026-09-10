@@ -2,13 +2,13 @@
 name: Coverage
 
 on:
-  push:
-    branches:
-      - main
-    paths-ignore:
-      - 'docs/**'
-      - 'media/**'
-      - '**.md'
+  # push:
+  #   branches:
+  #     - main
+  #   paths-ignore:
+  #     - 'docs/**'
+  #     - 'media/**'
+  #     - '**.md'
   # Allow manual triggering
   workflow_dispatch:
 
@@ -139,34 +139,34 @@ jobs:
           SPICE_BOOTSTRAP_DIR: ${{ github.workspace }}/src-bootstrap
         run: ./spicetest --is-github-actions --coverage
 
-      - name: Save CCache
-        uses: actions/cache/save@v6
-        if: always()
-        with:
-          path: ~/.cache/ccache
-          key: ccache-${{ runner.os }}-${{ runner.arch }}-coverage-${{ github.sha }}
+      # - name: Save CCache
+      #   uses: actions/cache/save@v6
+      #   if: always()
+      #   with:
+      #     path: ~/.cache/ccache
+      #     key: ccache-${{ runner.os }}-${{ runner.arch }}-coverage-${{ github.sha }}
 
-      - name: Generate coverage report
-        working-directory: build
-        run: |
-          sudo chmod +x coverage.py
-          python coverage.py
+      # - name: Generate coverage report
+      #   working-directory: build
+      #   run: |
+      #     sudo chmod +x coverage.py
+      #     python coverage.py
 
-      - name: Generate Spice coverage report
-        working-directory: build
-        env:
-          LLVM_COV: ${{ github.workspace }}/llvm/build/bin/llvm-cov
-        run: |
-          sudo chmod +x coverage-spice.py
-          python coverage-spice.py
+      # - name: Generate Spice coverage report
+      #   working-directory: build
+      #   env:
+      #     LLVM_COV: ${{ github.workspace }}/llvm/build/bin/llvm-cov
+      #   run: |
+      #     sudo chmod +x coverage-spice.py
+      #     python coverage-spice.py
 
-      - name: Upload coverage report
-        uses: Dylan700/sftp-upload-action@v1.2.5
-        with:
-          server: ${{ secrets.SFTP_SERVER }}
-          username: ${{ secrets.SFTP_USERNAME }}
-          password: ${{ secrets.SFTP_PASSWORD }}
-          uploads: |
-            ./build/coverage/ => coverage/
-            ./build/coverage-spice/ => coverage/std/
-          delete: 'true'
+      # - name: Upload coverage report
+      #   uses: Dylan700/sftp-upload-action@v1.2.5
+      #   with:
+      #     server: ${{ secrets.SFTP_SERVER }}
+      #     username: ${{ secrets.SFTP_USERNAME }}
+      #     password: ${{ secrets.SFTP_PASSWORD }}
+      #     uploads: |
+      #       ./build/coverage/ => coverage/
+      #       ./build/coverage-spice/ => coverage/std/
+      #     delete: 'true'
